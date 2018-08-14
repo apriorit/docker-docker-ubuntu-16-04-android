@@ -37,13 +37,13 @@ ENV NDK_URL_OLD="http://dl.google.com/android/repository/android-ndk-r10e-linux-
     JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
 	android_sdk=$ANDROID_SDK \
     SDK_URL="https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip" \
-    NDK_URL="https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip" \   
+    NDK_URL="https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip" \
     ANDROID_HOME="/usr/local/android-sdk" \
     ANDROID_VERSION=27 \
     ANDROID_BUILD_TOOLS_VERSION=27.0.3 \
     GIT_TF_URL="http://download.microsoft.com/download/A/E/2/AE23B059-5727-445B-91CC-15B7A078A7F4/git-tf-2.0.3.20131219.zip" \
     GIT_TF="/usr/git_tf" \
-    PATH=$PATH:$GIT_TF/git-tf-2.0.3.20131219
+    PATH="$PATH:$GIT_TF/git-tf-2.0.3.20131219"
 	
 # Download Android SDK
 
@@ -61,10 +61,8 @@ RUN cd "$ANDROID_SDK" \
 RUN echo ----------------------------------------------------------- && cd "$ANDROID_SDK" && cd android-sdk-linux &&  ./tools/android list targets
 
 # Install latest android tools and system images
-#RUN cd "$ANDROID_SDK" && cd android-sdk-linux && 
 RUN cd "$ANDROID_SDK" && cd android-sdk-linux &&  echo "y" |  ./tools/android update sdk --filter tools --no-ui --force
 RUN cd "$ANDROID_SDK" && cd android-sdk-linux &&  echo "y" |  ./tools/android update sdk --filter platform-tools --no-ui --force
-#RUN cd "$ANDROID_SDK" && cd android-sdk-linux &&  echo "y" |  ./tools/android update sdk --filter platform --no-ui --force
 
 RUN cd "$ANDROID_SDK" && cd android-sdk-linux &&  echo "y" | ./tools/android update sdk --filter build-tools-22.0.1 --no-ui -a
 RUN cd "$ANDROID_SDK" && cd android-sdk-linux &&  echo "y" | ./tools/android update sdk --filter build-tools-24.0.3 --no-ui -a
@@ -81,9 +79,7 @@ RUN cd $ANDROID_SDK \
 	&& mv  -v $ANDROID_SDK/android-sdk-linux/* $ANDROID_SDK/ \
 	&& rmdir $ANDROID_SDK/android-sdk-linux/   \
 	&& cp $ANDROID_SDK/build-tools/22.0.1/zipalign $ANDROID_SDK/tools \
-	&& rm android-sdk_r24.4.1-linux.tgz 
-
-	
+	&& rm android-sdk_r24.4.1-linux.tgz 	
 	
 #Install Android NDK for SDK
 RUN cd "$ANDROID_SDK" \
@@ -104,12 +100,7 @@ RUN /bin/bash -c "$ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh
 RUN /bin/bash -c "$ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --arch=mips --platform=android-18 --install-dir=android-mips-toolchain"
 
 RUN echo "------------------------------------- NEW SDK and NDK ------------------------------------------------"
-	
 
-# Download Android SDK
-#RUN if [ ! -d "$ANDROID_HOME" ]; then 	 mkdir "$ANDROID_HOME"  	 fi \
-#	&& if [ ! -d ".android" ]; then 	 mkdir ".android"  	 fi \
-#	&& if [ ! -d "$ANDROID_HOME/ndk-bundle" ]; then 	 mkdir "$ANDROID_HOME/ndk-bundle"  	 fi \
 RUN	mkdir "$ANDROID_HOME"  \
     && cd "$ANDROID_HOME" \
     && curl -o sdk.zip $SDK_URL \
