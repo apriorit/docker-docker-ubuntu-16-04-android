@@ -17,7 +17,6 @@ RUN apt-get install lib32ncurses5 --yes
 
 RUN dpkg --add-architecture i386
 RUN apt-get update
-#RUN apt-get install -y libbz2-1.0:i386
 RUN apt-get install -y lib32ncurses5 libbz2-1.0:i386 libstdc++6:i386 libfontconfig1:i386 libxext6:i386 libxrender1:i386 libgstreamer-plugins-base0.10-0:i386
 
 RUN apt-get install lib32stdc++6 --yes
@@ -38,10 +37,13 @@ ENV NDK_URL_OLD="http://dl.google.com/android/repository/android-ndk-r10e-linux-
     JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
 	android_sdk=$ANDROID_SDK \
     SDK_URL="https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip" \
-    NDK_URL="https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip" \
+    NDK_URL="https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip" \   
     ANDROID_HOME="/usr/local/android-sdk" \
     ANDROID_VERSION=27 \
-    ANDROID_BUILD_TOOLS_VERSION=27.0.3
+    ANDROID_BUILD_TOOLS_VERSION=27.0.3 \
+    GIT_TF_URL="http://download.microsoft.com/download/A/E/2/AE23B059-5727-445B-91CC-15B7A078A7F4/git-tf-2.0.3.20131219.zip" \
+    GIT_TF="/usr/git_tf" \
+    PATH=$PATH:$GIT_TF/git-tf-2.0.3.20131219
 	
 # Download Android SDK
 
@@ -49,12 +51,7 @@ RUN mkdir "$ANDROID_SDK" .android ndk-bundle\
 	&& cd "$ANDROID_SDK" \
 	&& curl -O https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz \
 	&& tar -xf android-sdk_r24.4.1-linux.tgz \
-	&& cd android-sdk-linux 
-#	&& echo "y" | ./tools/android update sdk --no-ui 
-
-#	&&  ./tools/android list sdk --all \
-#	&& echo y | ./tools/android update sdk -u -a -t 24 \
-#	&& echo y | ./tools/android update sdk -u -a -t 16 \
+	&& cd android-sdk-linux
 
 # All SDK components
 RUN cd "$ANDROID_SDK" \
@@ -97,7 +94,14 @@ RUN cd "$ANDROID_SDK" \
 	&& unzip ndk.zip \
 	&& rm ndk.zip \
 	&& mv  -v $ANDROID_SDK/ndk-r10e/android-ndk-r10e/* $ANDROID_SDK/ndk-r10e/ \
-	&& rmdir $ANDROID_SDK/ndk-r10e/android-ndk-r10e/  
+	&& rmdir $ANDROID_SDK/ndk-r10e/android-ndk-r10e/
+
+#Building NDK Toolchains	
+RUN $ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --arch=arm --platform=android-18 --install-dir=android-arm-toolchain \
+	&& $ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --arch=arm64 --platform=android-21 --install-dir=android-arm64-toolchain \
+	&& $ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --arch=x86_64 --platform=android-21 --install-dir=android-x86_64-toolchain \
+	&& $ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --arch=x86 --platform=android-18 --install-dir=android-x86-toolchain \
+	&& $ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --arch=mips --platform=android-18 --install-dir=android-mips-toolchain
 
 RUN echo "------------------------------------- NEW SDK and NDK ------------------------------------------------"
 	
@@ -131,7 +135,15 @@ RUN cd "$ANDROID_HOME" \
 	&& rmdir $ANDROID_HOME/ndk-bundle/android-ndk-r16b/  
 
 
-	
+#Install Git
+RUN apt-get install -y git
+
+#Install Git TF
+RUN mkdir "$GIT_TF" \
+		&& cd "$GIT_TF"  \
+        && curl -o git_tf.zip $GIT_TF_URL \
+        &&  unzip git_tf.zip \
+        && rm git_tf.zip
 
 RUN mkdir /source
 WORKDIR /source
