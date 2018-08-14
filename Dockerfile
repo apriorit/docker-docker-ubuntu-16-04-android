@@ -96,12 +96,12 @@ RUN cd "$ANDROID_SDK" \
 	&& mv  -v $ANDROID_SDK/ndk-r10e/android-ndk-r10e/* $ANDROID_SDK/ndk-r10e/ \
 	&& rmdir $ANDROID_SDK/ndk-r10e/android-ndk-r10e/
 
-#Building NDK Toolchains	
-RUN $ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --toolchain=arm-linux-androideabi-4.9 --arch=arm --platform=android-18 --install-dir=android-arm-toolchain
-RUN $ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --toolchain=aarch64-linux-android-4.9  --arch=arm64 --platform=android-21 --install-dir=android-arm64-toolchain
-RUN $ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --toolchain=x86_64-4.9 --arch=x86_64 --platform=android-21 --install-dir=android-x86_64-toolchain
-RUN $ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --toolchain=x86-4.9 --arch=x86 --platform=android-18 --install-dir=android-x86-toolchain
-RUN $ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --toolchain=mipsel-linux-android-4.9 --arch=mips --platform=android-18 --install-dir=android-mips-toolchain
+#Building NDK Toolchains
+RUN /bin/bash -c "$ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --arch=arm --platform=android-18 --install-dir=android-arm-toolchain"
+RUN /bin/bash -c "$ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --arch=arm64 --platform=android-21 --install-dir=android-arm64-toolchain"
+RUN /bin/bash -c "$ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --arch=x86_64 --platform=android-21 --install-dir=android-x86_64-toolchain"
+RUN /bin/bash -c "$ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --arch=x86 --platform=android-18 --install-dir=android-x86-toolchain"
+RUN /bin/bash -c "$ANDROID_SDK/ndk-r10e/build/tools/make-standalone-toolchain.sh --arch=mips --platform=android-18 --install-dir=android-mips-toolchain"
 
 RUN echo "------------------------------------- NEW SDK and NDK ------------------------------------------------"
 	
