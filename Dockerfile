@@ -35,7 +35,6 @@ RUN apt-get install openjdk-8-jre --yes
 ENV NDK_URL_OLD="http://dl.google.com/android/repository/android-ndk-r10e-linux-x86_64.zip " \
     ANDROID_SDK="/usr/local/android-sdk-old" \
     JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
-	android_sdk=$ANDROID_SDK \
     SDK_URL="https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip" \
     NDK_URL="https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip" \
     ANDROID_HOME="/usr/local/android-sdk" \
@@ -43,7 +42,7 @@ ENV NDK_URL_OLD="http://dl.google.com/android/repository/android-ndk-r10e-linux-
     ANDROID_BUILD_TOOLS_VERSION=27.0.3 \
     GIT_TF_URL="http://download.microsoft.com/download/A/E/2/AE23B059-5727-445B-91CC-15B7A078A7F4/git-tf-2.0.3.20131219.zip" \
     GIT_TF="/usr/git_tf" \
-    PATH="$PATH:$GIT_TF/git-tf-2.0.3.20131219"
+    PATH="$PATH:/usr/git_tf/git-tf-2.0.3.20131219"
 	
 # Download Android SDK
 
@@ -135,6 +134,7 @@ RUN mkdir "$GIT_TF" \
         && curl -o git_tf.zip $GIT_TF_URL \
         &&  unzip git_tf.zip \
         && rm git_tf.zip
+RUN git tf --version
 
 RUN mkdir /source
 WORKDIR /source
